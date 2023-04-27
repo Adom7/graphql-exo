@@ -1,0 +1,21 @@
+{
+  "name": "graohql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "type": "module",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^4.13.0",
+    "express": "^4.18.2",
+    "express-graphql": "^0.12.0",
+    "graphql": "^15.8.0"
+  },
+  "devDependencies": {
+    "prisma": "^4.13.0"
+  }
+}
