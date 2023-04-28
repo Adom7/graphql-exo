@@ -17,7 +17,7 @@ let schema = buildSchema(`
         idGames: ID!
         nameGames: String!
         idEditors: Int
-        editors: editors    
+        editors: [editors]    
         stock: [stock]
     }
     type stores {
@@ -32,8 +32,8 @@ let schema = buildSchema(`
         idStores: Int
         units: Int
         prices: Float
-        stores: stores
-        games: games
+        stores: [stores]
+        games: [games]
     }
     
     type Query {
@@ -42,38 +42,96 @@ let schema = buildSchema(`
         readStores : [stores]
         readStock : [stock]
     }
-    input createEditorsArgs{
-        nameEditors: String
+#SECTION - GamesArgs
+    input createGamesArgs {
+        nameGames : String
     }
-    input updateEditorsArgs{
-        id: Int
-        nameEditors: String
+
+    input updateGamesArgs {
+        id : Int
+
     }
 
     input deleteGamesArgs{
         id : Int
     }
+#!SECTION
+
+#SECTION - EditorsArgs
+    input createEditorsArgs{
+        nameEditors: String
+    }
+
+    input updateEditorsArgs{
+        id: Int
+        nameEditors: String
+    }
+
+    input deleteEditorsArgs{
+        id : Int
+    }
+#!SECTION
+
+#SECTION - StoresArgs
+    input createStoresArgs{
+        nameStores: String
+    }
+
+    input updateStoresArgs{
+        id: Int
+    }
+
+    input deleteStoresArgs{
+        id : Int
+    }
+#!SECTION
+
+#SECTION - StockArgs
+    input createStockArgs{
+        idStock: String
+    }
+    
+    input updateStockArgs{
+        id: Int
+    }
+
+    input deleteStockArgs{
+        id : Int
+    }
+#!SECTION
 
     type Mutation {
-    #SECTION Editors
-        createEditors(value: createEditorsArgs): [editors]
-        deleteEditor(id: Int): [editors]
-        updateEditor(value: updateEditorsArgs): [editors]
-    #!SECTION
-    #SECTION - Games
+        createGames (value : createGamesArgs) : [games]
+        updateGames (value : updateGamesArgs) : [games]
         deleteGames (value : deleteGamesArgs) : [games]
-    #!SECTION        
-    #SECTION - Stores
 
-    #!SECTION
-    #SECTION - Stocks
-    
-    #!SECTION
+        createEditors(value: createEditorsArgs): [editors]
+        updateEditor (value: updateEditorsArgs): [editors]
+        deleteEditor (value: deleteEditorsArgs): [editors]
+
+        createStores (value: createStoresArgs): [stores]
+        updateStores (value: updateStoresArgs): [stores]
+        deleteStores (value: deleteStoresArgs): [stores]
+
+        createStock (value: createStockArgs): [stock]
+        updateStock (value: updateStockArgs): [stock]
+        deleteStock (value: deleteStockArgs): [stock]
     }
 `)
 
 let root = {
     //SECTION - Mutations Create
+    createGames: async ({ value }) => {
+        await prisma.games.create({
+            data: value
+        })
+        return await prisma.games.findMany({
+            include: {
+                editors: true,
+                stock: true
+            }
+        })
+    },
     createEditors: async ({ value }) => {
         await prisma.editors.create({
             data: value
@@ -84,17 +142,42 @@ let root = {
             }
         })
     },
+    createStores: async ({ value }) => {
+        await prisma.stores.create({
+            data: value
+        })
+        return await prisma.stores.findMany({
+            include: {
+                stock: true
+            }
+        })
+    },
+    createStock: async ({ value }) => {
+        await prisma.stock.create({
+            data: value
+        })
+        return await prisma.stock.findMany({
+            include: {
+                stores: true,
+                games: true
+            }
+        })
+    },
+
     //!SECTION
 
 
 
     //SECTION -  Query Read
     readGames: async () => {
-        return prisma.games.findMany({
+        const games = await prisma.games.findMany({
             include: {
                 editors: true
             }
+
         })
+        console.log(games);
+        return games
     },
     readEditors: async () => {
         return await prisma.editors.findMany({
@@ -132,10 +215,10 @@ let root = {
     //!SECTION
 
     //SECTION - Mutation Delete
-    deleteEditor: async ({ id }) => {
+    deleteEditor: async ({ value }) => {
         const games = await prisma.games.findMany({
             where: {
-                idEditors: id,
+                idEditors: value.id,
             },
         })
         games.forEach(async (game) => {
