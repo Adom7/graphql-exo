@@ -121,32 +121,7 @@ INSERT INTO `user` (`iduser`, `lastname`, `firstname`, `email`, `password`, `rol
 
 -- --------------------------------------------------------
 
---
--- Structure de la table `_prisma_migrations`
---
 
-CREATE TABLE `_prisma_migrations` (
-  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `checksum` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `finished_at` datetime(3) DEFAULT NULL,
-  `migration_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `logs` text COLLATE utf8mb4_unicode_ci,
-  `rolled_back_at` datetime(3) DEFAULT NULL,
-  `started_at` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `applied_steps_count` int(10) UNSIGNED NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `_prisma_migrations`
---
-
-INSERT INTO `_prisma_migrations` (`id`, `checksum`, `finished_at`, `migration_name`, `logs`, `rolled_back_at`, `started_at`, `applied_steps_count`) VALUES
-('47bbfb96-8790-480d-a568-079ab475b565', '2a2283a942e426c455a4d2bca68bbb7be2cbf6ba48e2ff9c11292621d75ce41b', '2023-04-30 14:00:49.146', '20230430140049_change_length_password', NULL, NULL, '2023-04-30 14:00:49.113', 1),
-('cfacce36-03e7-4673-82c0-c82195089822', '168412495d0cdfc8020417639dcbed0e4778aceaa1ec7fc6b12e7927ff1c96db', '2023-04-30 14:00:36.029', '20230430140431_add_role_on_user', NULL, NULL, '2023-04-30 14:00:35.699', 1);
-
---
--- Index pour les tables déchargées
---
 
 --
 -- Index pour la table `grade`
@@ -197,16 +172,9 @@ ALTER TABLE `user`
   ADD UNIQUE KEY `email_UNIQUE` (`email`),
   ADD KEY `user_role_idrole_fkey` (`role_idrole`);
 
---
--- Index pour la table `_prisma_migrations`
---
-ALTER TABLE `_prisma_migrations`
-  ADD PRIMARY KEY (`id`);
 
---
 -- AUTO_INCREMENT pour les tables déchargées
 --
-
 --
 -- AUTO_INCREMENT pour la table `grade`
 --
