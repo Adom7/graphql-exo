@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model lesson {
+  idlesson          Int     @id @unique @default(autoincrement())
+  name              String  @db.VarChar(45)
+  teacher_idteacher Int
+  teacher           teacher @relation(fields: [teacher_idteacher], references: [idteacher], onDelete: NoAction, onUpdate: NoAction, map: "fk_lesson_teacher1")
+  mark              mark[]
+
+  @@index([teacher_idteacher], map: "fk_lesson_teacher1_idx")
+}
+
+model mark {
+  idmark            Int     @id @unique @default(autoincrement())
+  result            Float   @db.Float
+  lesson_idlesson   Int
+  student_idstudent Int
+  lesson            lesson  @relation(fields: [lesson_idlesson], references: [idlesson], onDelete: NoAction, onUpdate: NoAction, map: "fk_mark_lesson1")
+  student           student @relation(fields: [student_idstudent], references: [idstudent], onDelete: NoAction, onUpdate: NoAction, map: "fk_mark_student1")
+
+  @@index([lesson_idlesson], map: "fk_mark_lesson1_idx")
+  @@index([student_idstudent], map: "fk_mark_student1_idx")
+}
+
+model student {
+  idstudent   Int     @id @unique @default(autoincrement())
+  user_iduser Int
+  ine         String? @db.VarChar(45)
+  mark        mark[]
+  user        user    @relation(fields: [user_iduser], references: [iduser], onDelete: NoAction, onUpdate: NoAction, map: "fk_student_user")
+
+  @@index([user_iduser], map: "fk_student_user_idx")
+}
+
+model teacher {
+  idteacher   Int      @id @unique @default(autoincrement())
+  user_iduser Int
+  isAgreement Int      @db.TinyInt
+  lesson      lesson[]
+  user        user     @relation(fields: [user_iduser], references: [iduser], onDelete: NoAction, onUpdate: NoAction, map: "fk_teacher_user1")
+
+  @@index([user_iduser], map: "fk_teacher_user1_idx")
+}
+
+model user {
+  iduser      Int       @id @unique @default(autoincrement())
+  lastname    String    @db.VarChar(45)
+  firstname   String    @db.VarChar(45)
+  email       String    @unique @db.VarChar(45)
+  password    String    @db.VarChar(255)
+  student     student[]
+  teacher     teacher[]
+  role_idrole Int
+  role        role      @relation(fields: [role_idrole], references: [idrole], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model role {
+  idrole Int    @id @unique @default(autoincrement())
+  name   String @db.VarChar(45)
+  user   user[]
+}
